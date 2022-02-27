@@ -9,6 +9,7 @@ def readCSV(fileName):
 
 def main(fileName):
     data = readCSV(fileName)
+    data
 
 
 if __name__ == "__main__":
