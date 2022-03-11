@@ -15,6 +15,6 @@ class Graph:
 
 
 if __name__ == '__main__':
-    test = Graph(Eigen('BVH/drink_water/normal.bvh',
+    test = Graph(Eigen('software/data/BVH/drink_water/normal.bvh',
                  'RightShoulder', ['x', 'y', 'z']))
     test.drawLine()
