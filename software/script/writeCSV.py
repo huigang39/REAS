@@ -1,10 +1,12 @@
+from sklearn.utils import column_or_1d
 from extractEigen import Eigen
 import os
 
 
-class OUTPUT:
+class CSV:
     def __init__(self, fileList: list) -> None:
         self.fileList = fileList
+        # TODO
         self.normalStage = {1: [], 2: [], 3: [], 4: [], 5: [], 6: []}  # 病人理论动作
         self.patientStage = {1: [], 2: [],
                              3: [], 4: [], 5: [], 6: []}  # 病人实际动作
@@ -35,15 +37,21 @@ class OUTPUT:
         self.makeDirs()
         for file in self.fileList:
             eigen = Eigen(file, 'RightShoulder', ['x', 'y', 'z'])
+            column = 'mean_x,mean_y,mean_z,std_x,std_y,std_z,ppv_x,ppv_y,ppv_z,aboveMean_x,aboveMean_y,aboveMean_z,stage'
 
             with open(file.replace('BVH', 'dataset').replace('bvh', 'csv'), 'w') as f:
-                f.writelines('mean,std,ppv,aboveMean,stage\n')
+                f.writelines(column + '\n')
 
-                f.writelines(
-                    str(eigen.getMean()) + ',' +
-                    str(eigen.getStd()) + ',' +
-                    str(eigen.getPPV()) + ',' +
-                    str(eigen.getAboveMean()) + ',')
+                for eigenValue in column.split(','):
+                    for i in range(0, 3):
+                        if 'mean_x' in eigenValue:
+                            f.writelines(str(eigen.getMean()[i]) + ',')
+                        elif 'std_x' in eigenValue:
+                            f.writelines(str(eigen.getStd()[i]) + ',')
+                        elif 'ppv_x' in eigenValue:
+                            f.writelines(str(eigen.getPPV()[i]) + ',')
+                        elif 'aboveMean_x' in eigenValue:
+                            f.writelines(str(eigen.getAboveMean()[i]) + ',')
 
                 if 'drink_water' not in file:
                     f.writelines(file[file.rfind('/') -
@@ -65,7 +73,7 @@ class OUTPUT:
 
 
 if __name__ == '__main__':
-    fileList = OUTPUT.getfileList('software/data/BVH/')
-    test = OUTPUT(fileList)
+    fileList = CSV.getfileList('software/data/BVH/')
+    test = CSV(fileList)
     test.writeSingleEigenToCSV()
     # test.writeCollectiveEigen()
